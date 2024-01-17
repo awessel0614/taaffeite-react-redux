@@ -1,8 +1,11 @@
 import { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import axios from 'axios';
 
-function BookForm() {
+function BookForm(props) {
   const [title, setTitle] = useState('');
   const [author, setAuthor] = useState('');
+  const dispatch = useDispatch();
 
   const handleSubmit = event => {
     event.preventDefault();
@@ -10,6 +13,22 @@ function BookForm() {
     console.log(`Adding book`, {title, author});
 
     // TODO - axios request to server to add book
+
+    //This block of code here ONLY adds to redux, NOT the database...
+    //so, good for a cart situation!!!
+    // let action = { 
+    //   type: 'ADD_BOOK', 
+    //   payload: {title: title, author: author}};
+    //   dispatch(action);
+
+
+    //So, here's how we send data to the server
+    axios.post('/books', {title, author}).then((response) =>{
+        props.getBookList();
+    }).catch((error) => {
+      console.log('Error in posting a book:', error);
+      alert('Something went wrong!')
+    });
 
   };
 
